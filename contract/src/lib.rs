@@ -7,39 +7,71 @@
  */
 
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
-use near_sdk::{log, near_bindgen};
+use near_sdk::{AccountId, env, log, near_bindgen};
+use near_sdk::collections::{UnorderedMap};
+use near_sdk::serde::{Deserialize, Serialize};
 
-// Define the default message
-const DEFAULT_MESSAGE: &str = "Hello";
+// #[near_bindgen]
+#[derive(BorshDeserialize, BorshSerialize, Debug)]
+pub struct Poll {
+    id: usize,
+    owner: AccountId,
+    description: String,
+    start_time: String,
+    end_time: String,
+    options: UnorderedMap<usize, Option>,
+}
+
+#[derive(BorshDeserialize, BorshSerialize, Debug)]
+pub struct Option {
+    id: usize,
+    value: String,
+    votes: u32,
+}
 
 // Define the contract structure
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize)]
 pub struct Contract {
-    message: String,
+    polls: UnorderedMap<usize, Poll>,
+
 }
 
-// Define the default, which automatically initializes the contract
-impl Default for Contract{
-    fn default() -> Self{
-        Self{message: DEFAULT_MESSAGE.to_string()}
+impl Default for Contract {
+    fn default() -> Self {
+        Self {
+            polls: UnorderedMap::new(b"polls".to_vec()),
+        }
     }
 }
-
 // Implement the contract structure
 #[near_bindgen]
 impl Contract {
-    // Public method - returns the greeting saved, defaulting to DEFAULT_MESSAGE
-    pub fn get_greeting(&self) -> String {
-        return self.message.clone();
+    pub fn create_poll(&mut self, description: String, start_time: String, end_time: String, options: [String; 3]) -> usize {
+        let owner = env::signer_account_id();
+        let mut map_options = UnorderedMap::new(b"options".to_vec());
+        for (i, x) in options.iter().enumerate() {
+            let option= Option {
+                id: i + 1,
+                value: x.to_string(),
+                votes: 0
+            };
+            map_options.insert(&option.id, &option);
+        }
+        let poll = Poll{
+            id: (self.polls.len() + 1) as usize,
+            owner,
+            description,
+            start_time: start_time.to_string(),
+            end_time: end_time.to_string(),
+            options: map_options,
+        };
+
+        self.polls.insert(&poll.id, &poll);
+        poll.id
     }
 
-    // Public method - accepts a greeting, such as "howdy", and records it
-    pub fn set_greeting(&mut self, message: String) {
-        // Use env::log to record logs permanently to the blockchain!
-        log!("Saving greeting {}", message);
-        self.message = message;
-    }
+
 }
 
 /*
@@ -51,22 +83,15 @@ mod tests {
     use super::*;
 
     #[test]
-    fn get_default_greeting() {
-        let contract = Contract::default();
-        // this test did not call set_greeting so should return the default "Hello" greeting
+    fn create_poll() {
+        let mut contract = Contract::default();
         assert_eq!(
-            contract.get_greeting(),
-            "Hello".to_string()
+            contract.create_poll("Best programming language!".to_string(), "1656874039533".to_string(), "1656874072974".to_string(), ["Java".to_string(), "Rust".to_string(), "C++".to_string()]),
+            1
         );
+        assert_eq!(contract.polls.get(&0).description.unwrap(), "Best programming language!")
     }
 
-    #[test]
-    fn set_then_get_greeting() {
-        let mut contract = Contract::default();
-        contract.set_greeting("howdy".to_string());
-        assert_eq!(
-            contract.get_greeting(),
-            "howdy".to_string()
-        );
-    }
+
+
 }
