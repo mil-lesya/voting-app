@@ -7,23 +7,23 @@
  */
 
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
-use near_sdk::{AccountId, env, log, near_bindgen};
+use near_sdk::{AccountId, env, near_bindgen, PanicOnDefault};
 use near_sdk::collections::{UnorderedMap};
 use near_sdk::serde::{Deserialize, Serialize};
 
 // #[near_bindgen]
-#[derive(BorshDeserialize, BorshSerialize, Debug)]
+#[derive(Deserialize, Serialize, BorshDeserialize, BorshSerialize, Debug)]
 pub struct Poll {
     id: usize,
     owner: AccountId,
     description: String,
     start_time: String,
     end_time: String,
-    options: UnorderedMap<usize, Option>,
+    options: Vec<Variant>,
 }
 
-#[derive(BorshDeserialize, BorshSerialize, Debug)]
-pub struct Option {
+#[derive(Deserialize, Serialize, BorshDeserialize, BorshSerialize, Debug)]
+pub struct Variant {
     id: usize,
     value: String,
     votes: u32,
@@ -31,46 +31,50 @@ pub struct Option {
 
 // Define the contract structure
 #[near_bindgen]
-#[derive(BorshDeserialize, BorshSerialize)]
+#[derive(BorshDeserialize, BorshSerialize, PanicOnDefault)]
 pub struct Contract {
-    polls: UnorderedMap<usize, Poll>,
-
+    polls: UnorderedMap<usize, Poll>
 }
 
-impl Default for Contract {
-    fn default() -> Self {
+// Implement the contract structure
+#[near_bindgen]
+impl Contract {
+    #[init]
+    pub fn new_default() -> Self {
         Self {
             polls: UnorderedMap::new(b"polls".to_vec()),
         }
     }
-}
-// Implement the contract structure
-#[near_bindgen]
-impl Contract {
+
     pub fn create_poll(&mut self, description: String, start_time: String, end_time: String, options: [String; 3]) -> usize {
         let owner = env::signer_account_id();
-        let mut map_options = UnorderedMap::new(b"options".to_vec());
+        let mut poll_options = Vec::new();
+
         for (i, x) in options.iter().enumerate() {
-            let option= Option {
+            let option = Variant {
                 id: i + 1,
                 value: x.to_string(),
                 votes: 0
             };
-            map_options.insert(&option.id, &option);
+            poll_options.push(option);
         }
-        let poll = Poll{
+
+        let poll = Poll {
             id: (self.polls.len() + 1) as usize,
             owner,
             description,
             start_time: start_time.to_string(),
             end_time: end_time.to_string(),
-            options: map_options,
+            options: poll_options,
         };
 
         self.polls.insert(&poll.id, &poll);
         poll.id
     }
 
+    pub fn get_poll(&self, poll_id: usize) -> Option<Poll> {
+        return self.polls.get(&poll_id);
+    }
 
 }
 
@@ -83,7 +87,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn create_poll() {
+    fn test_create_poll() {
         let mut contract = Contract::default();
         assert_eq!(
             contract.create_poll("Best programming language!".to_string(), "1656874039533".to_string(), "1656874072974".to_string(), ["Java".to_string(), "Rust".to_string(), "C++".to_string()]),
@@ -91,7 +95,4 @@ mod tests {
         );
         assert_eq!(contract.polls.get(&0).description.unwrap(), "Best programming language!")
     }
-
-
-
 }
