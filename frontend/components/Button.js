@@ -1,14 +1,14 @@
-import React from 'react';
-import styled from 'styled-components';
-import colors from '../assets/constants/colors';
+import React from 'react'
+import styled from 'styled-components'
+import colors from '../assets/constants/colors'
 
 const Button = ({ text, style, click }) => {
   return (
     <ButtonContainer style={style} onClick={click}>
       {text}
     </ButtonContainer>
-  );
-};
+  )
+}
 
 const ButtonContainer = styled.div`
   cursor: pointer;
@@ -25,5 +25,5 @@ const ButtonContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-`;
-export default Button;
+`
+export default Button

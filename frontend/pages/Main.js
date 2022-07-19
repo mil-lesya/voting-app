@@ -1,7 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
-import colors from '../assets/constants/colors';
-import Button from '../components/Button';
+import React from 'react'
+import styled from 'styled-components'
+import colors from '../assets/constants/colors'
+import Button from '../components/Button'
 
 const Main = ({ login }) => {
   return (
@@ -9,7 +9,7 @@ const Main = ({ login }) => {
       <Container>
         <HeaderContainer>
           <Logo>VotingApp</Logo>
-          <Button text="Log in" click={login} />
+          <Button text='Log in' click={login} />
         </HeaderContainer>
 
         <TitleContainer>
@@ -17,17 +17,17 @@ const Main = ({ login }) => {
           <Text>
             A convenient application for creating polls based on NEAR.
           </Text>
-          <Button style={{ width: 200 }} text="Get started" click={login} />
+          <Button style={{ width: 200 }} text='Get started' click={login} />
         </TitleContainer>
       </Container>
     </>
-  );
-};
+  )
+}
 
 const Container = styled.div`
   margin: 55px 195px;
   height: 100vh;
-`;
+`
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -35,7 +35,7 @@ const HeaderContainer = styled.div`
   height: 55px;
   align-items: center;
   margin-bottom: 214px;
-`;
+`
 
 const Logo = styled.span`
   font-family: 'Nunito';
@@ -44,7 +44,7 @@ const Logo = styled.span`
   font-size: 40px;
   line-height: 55px;
   color: ${colors.white};
-`;
+`
 
 const TitleContainer = styled.div`
   display: flex;
@@ -52,7 +52,7 @@ const TitleContainer = styled.div`
   justify-content: flex-start;
   align-items: flex-start;
   gap: 35px;
-`;
+`
 const Title = styled.p`
   font-family: 'Nunito';
   font-style: normal;
@@ -62,7 +62,7 @@ const Title = styled.p`
   color: ${colors.white};
   width: 641px;
   height: 150px;
-`;
+`
 
 const Text = styled.p`
   font-family: 'Nunito';
@@ -73,8 +73,8 @@ const Text = styled.p`
   color: ${colors.white};
   width: 404px;
   height: 74px;
-`;
+`
 
-const ContentContainer = styled.div``;
+const ContentContainer = styled.div``
 
-export default Main;
+export default Main
