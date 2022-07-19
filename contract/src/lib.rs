@@ -11,7 +11,6 @@ use near_sdk::{AccountId, env, near_bindgen, PanicOnDefault};
 use near_sdk::collections::{UnorderedMap};
 use near_sdk::serde::{Deserialize, Serialize};
 
-// #[near_bindgen]
 #[derive(Deserialize, Serialize, BorshDeserialize, BorshSerialize, Debug)]
 pub struct Poll {
     id: usize,
@@ -74,6 +73,29 @@ impl Contract {
 
     pub fn get_poll(&self, poll_id: usize) -> Option<Poll> {
         return self.polls.get(&poll_id);
+    }
+
+
+    pub fn get_polls_for_owner(&self, account_id: AccountId) -> Vec<Poll> {
+        let all_polls = self.polls.values_as_vector().to_vec();
+        let mut account_polls = Vec::<Poll>::new();
+
+        for poll in all_polls {
+            if poll.owner == account_id {
+                account_polls.push(poll);
+            }
+        }
+
+        account_polls
+    }
+
+    pub fn get_all_polls(&self, from_index: Option<u64>, limit: Option<u64>) -> Vec<Poll> {
+        self.polls
+            .iter()
+            .skip(from_index.unwrap_or(0) as usize)
+            .take(limit.unwrap_or(10) as usize)
+            .map(|(poll_id, _poll)| self.polls.get(&poll_id).unwrap())
+            .collect()
     }
 
 }
