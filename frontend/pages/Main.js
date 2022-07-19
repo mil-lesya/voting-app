@@ -1,7 +1,7 @@
-import React from "react";
-import styled from "styled-components";
-import colors from "../assets/constants/colors";
-import Button from "../components/Button";
+import React from 'react';
+import styled from 'styled-components';
+import colors from '../assets/constants/colors';
+import Button from '../components/Button';
 
 const Main = ({ login }) => {
   return (
@@ -38,7 +38,7 @@ const HeaderContainer = styled.div`
 `;
 
 const Logo = styled.span`
-  font-family: "Nunito";
+  font-family: 'Nunito';
   font-style: normal;
   font-weight: 900;
   font-size: 40px;
@@ -54,7 +54,7 @@ const TitleContainer = styled.div`
   gap: 35px;
 `;
 const Title = styled.p`
-  font-family: "Nunito";
+  font-family: 'Nunito';
   font-style: normal;
   font-weight: 800;
   font-size: 55px;
@@ -65,7 +65,7 @@ const Title = styled.p`
 `;
 
 const Text = styled.p`
-  font-family: "Nunito";
+  font-family: 'Nunito';
   font-style: normal;
   font-weight: 500;
   font-size: 24px;

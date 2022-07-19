@@ -1,6 +1,6 @@
-import React from "react";
-import styled from "styled-components";
-import colors from "../assets/constants/colors";
+import React from 'react';
+import styled from 'styled-components';
+import colors from '../assets/constants/colors';
 
 const Button = ({ text, style, click }) => {
   return (
@@ -16,7 +16,7 @@ const ButtonContainer = styled.div`
   height: 53px;
   background: ${colors.white};
   border-radius: 50px;
-  font-family: "Nunito";
+  font-family: 'Nunito';
   font-style: normal;
   font-weight: 700;
   font-size: 20px;
