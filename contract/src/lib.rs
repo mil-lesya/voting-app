@@ -16,8 +16,8 @@ pub struct Poll {
     id: usize,
     owner: AccountId,
     description: String,
-    start_time: String,
-    end_time: String,
+    start_time: Option<String>,
+    end_time: Option<String>,
     options: Vec<Variant>,
 }
 
@@ -32,7 +32,7 @@ pub struct Variant {
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize, PanicOnDefault)]
 pub struct Contract {
-    polls: UnorderedMap<usize, Poll>
+    polls: UnorderedMap<usize, Poll>,
 }
 
 // Implement the contract structure
@@ -45,25 +45,33 @@ impl Contract {
         }
     }
 
-    pub fn create_poll(&mut self, description: String, start_time: String, end_time: String, options: [String; 3]) -> usize {
+    pub fn create_poll(&mut self, description: String, start_time: Option<String>, end_time: Option<String>, options: Vec<String>) -> usize {
         let owner = env::signer_account_id();
         let mut poll_options = Vec::new();
 
         for (i, x) in options.iter().enumerate() {
             let option = Variant {
-                id: i + 1,
+                id: i,
                 value: x.to_string(),
-                votes: 0
+                votes: 0,
             };
             poll_options.push(option);
         }
 
+        let mut poll_id = 0;
+        let polls_len = self.polls.len();
+        let vec_polls = self.polls.values_as_vector();
+
+        if polls_len > 0 {
+            poll_id = vec_polls.get(polls_len - 1).unwrap().id + 1;
+        }
+
         let poll = Poll {
-            id: (self.polls.len() + 1) as usize,
+            id: poll_id,
             owner,
             description,
-            start_time: start_time.to_string(),
-            end_time: end_time.to_string(),
+            start_time,
+            end_time,
             options: poll_options,
         };
 
@@ -98,6 +106,17 @@ impl Contract {
             .collect()
     }
 
+    pub fn delete_poll(&mut self, poll_id: usize) {
+        let poll = self.polls
+            .get(&poll_id)
+            .expect("Such poll does not exists");
+
+        let account_id = env::signer_account_id();
+        assert_eq!(account_id, poll.owner, "Only owner can delete the poll!");
+
+        self.polls
+            .remove(&poll_id);
+    }
 }
 
 /*
