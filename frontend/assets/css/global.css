@@ -2,35 +2,73 @@
   box-sizing: border-box;
 }
 
+@font-face {
+  font-family: Nunito;
+  src: url('../fonts/Nunito-Regular.ttf') format('truetype');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: Nunito;
+  src: url('../fonts/Nunito-Medium.ttf') format('truetype');
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: Nunito;
+  src: url('../fonts/Nunito-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: Nunito;
+  src: url('../fonts/Nunito-Bold.ttf') format('truetype');
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: Nunito;
+  src: url('../fonts/Nunito-ExtraBold.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 800;
+}
+
+@font-face {
+  font-family: Nunito;
+  src: url('../fonts/Nunito-Black.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 900;
+}
+
 html {
-  --bg: #efefef;
+  --bg: #ffff;
   --fg: #1e1e1e;
   --gray: #555;
   --light-gray: #ccc;
   --shadow: #e6e6e6;
   --success: rgb(90, 206, 132);
-  --primary: #FF585D;
-  --secondary: #0072CE;
+  --primary: #ff585d;
+  --secondary: #0072ce;
 
   background-color: var(--bg);
   color: var(--fg);
-  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica,
+    Arial, sans-serif;
   font-size: calc(0.9em + 0.5vw);
   line-height: 1.3;
 }
 
 body {
   margin: 0;
-  padding: 1em;
 }
 
-main {
+/* main {
   margin: 0 auto;
   max-width: 26em;
   text-align: justify;
-}
+} */
 
-h1 {
+/* h1 {
   background-image: url(../img/logo-black.svg);
   background-position: center 1em;
   background-repeat: no-repeat;
@@ -38,7 +76,7 @@ h1 {
   margin-top: 0;
   padding: 3.5em 0 0.5em;
   text-align: center;
-}
+} */
 
 a,
 .link {
@@ -56,12 +94,13 @@ a:active,
   color: var(--secondary);
 }
 
-button, input {
+button,
+input {
   font: inherit;
   outline: none;
 }
 
-button {
+/* button {
   background-color: var(--secondary);
   border-radius: 5px;
   border: none;
@@ -70,7 +109,8 @@ button {
   padding: 0.3em 0.75em;
   transition: transform 30ms;
 }
-button:hover, button:focus {
+button:hover,
+button:focus {
   box-shadow: 0 0 10em rgba(255, 255, 255, 0.2) inset;
 }
 button:active {
@@ -82,7 +122,8 @@ button.link {
   box-shadow: none;
   display: inline;
 }
-[disabled] button, button[disabled] {
+[disabled] button,
+button[disabled] {
   box-shadow: none;
   background-color: var(--light-gray);
   color: gray;
@@ -106,13 +147,17 @@ button.link {
   position: absolute;
   top: 0.45em;
   right: 0.5em;
-}
+} */
 @keyframes loader {
-  0% { transform: rotate(0deg) }
-  100% { transform: rotate(360deg) }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-fieldset {
+/* fieldset {
   border: none;
   padding: 2em 0;
 }
@@ -164,21 +209,31 @@ aside footer *:first-child {
 }
 aside footer *:last-child {
   color: var(--gray);
-}
+} */
 @keyframes notify {
-  0% { transform: translateY(10em) }
-  5% { transform: translateY(0) }
-  95% { transform: translateY(0) }
-  100% { transform: translateY(10em) }
+  0% {
+    transform: translateY(10em);
+  }
+  5% {
+    transform: translateY(0);
+  }
+  95% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(10em);
+  }
 }
 
 @media (prefers-color-scheme: dark) {
   html {
-    --bg: #1e1e1e;
-    --fg: #efefef;
+    --fg: #ffff;
     --gray: #aaa;
     --shadow: #2a2a2a;
     --light-gray: #444;
+    background-image: url('../img/bg1.svg');
+    background-size: cover;
+    background-repeat: no-repeat;
   }
   h1 {
     background-image: url(../img/logo-white.svg);
@@ -186,4 +241,8 @@ aside footer *:last-child {
   input:focus {
     box-shadow: 0 0 10em rgba(255, 255, 255, 0.02) inset;
   }
+}
+
+p {
+  margin: 0;
 }
