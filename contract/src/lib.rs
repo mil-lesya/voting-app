@@ -26,6 +26,7 @@ pub struct Variant {
     id: usize,
     value: String,
     votes: u32,
+    voted_users: Vec<AccountId>,
 }
 
 // Define the contract structure
@@ -45,20 +46,21 @@ impl Contract {
         }
     }
 
-    pub fn create_poll(&mut self, description: String, start_time: Option<String>, end_time: Option<String>, options: Vec<String>) -> usize {
+    pub fn create_poll(&mut self, description: String, start_time: Option<String>, end_time: Option<String>, options: Vec<String>) -> Poll {
         let owner = env::signer_account_id();
         let mut poll_options = Vec::new();
 
         for (i, x) in options.iter().enumerate() {
             let option = Variant {
-                id: i,
+                id: i + 1,
                 value: x.to_string(),
                 votes: 0,
+                voted_users: Vec::new(),
             };
             poll_options.push(option);
         }
 
-        let mut poll_id = 0;
+        let mut poll_id = 1;
         let polls_len = self.polls.len();
         let vec_polls = self.polls.values_as_vector();
 
@@ -76,7 +78,7 @@ impl Contract {
         };
 
         self.polls.insert(&poll.id, &poll);
-        poll.id
+        poll
     }
 
     pub fn get_poll(&self, poll_id: usize) -> Option<Poll> {
@@ -116,6 +118,24 @@ impl Contract {
 
         self.polls
             .remove(&poll_id);
+    }
+
+    pub fn vote(&mut self, poll_id: usize, variant_id: usize) {
+        let poll = &mut self.polls
+            .get(&poll_id)
+            .expect("Such poll does not exists");
+        let voter = env::signer_account_id();
+
+        for option in poll.options.iter() {
+            assert_eq!(option.voted_users.contains(&voter), false, "This user has already voted!");
+        }
+
+        let option = poll.options.iter_mut().find(|v| v.id == variant_id).unwrap();
+
+        option.voted_users.push(voter);
+        option.votes = option.votes + 1;
+
+        self.polls.insert(&poll_id, &poll);
     }
 }
 
