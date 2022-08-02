@@ -1,11 +1,3 @@
-/*
- * Example smart contract written in RUST
- *
- * Learn more about writing NEAR smart contracts with Rust:
- * https://near-docs.io/develop/Contract
- *
- */
-
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::{AccountId, env, near_bindgen, PanicOnDefault};
 use near_sdk::collections::{UnorderedMap};
@@ -85,29 +77,6 @@ impl Contract {
         return self.polls.get(&poll_id);
     }
 
-
-    pub fn get_polls_for_owner(&self, account_id: AccountId) -> Vec<Poll> {
-        let all_polls = self.polls.values_as_vector().to_vec();
-        let mut account_polls = Vec::<Poll>::new();
-
-        for poll in all_polls {
-            if poll.owner == account_id {
-                account_polls.push(poll);
-            }
-        }
-
-        account_polls
-    }
-
-    pub fn get_all_polls(&self, from_index: Option<u64>, limit: Option<u64>) -> Vec<Poll> {
-        self.polls
-            .iter()
-            .skip(from_index.unwrap_or(0) as usize)
-            .take(limit.unwrap_or(10) as usize)
-            .map(|(poll_id, _poll)| self.polls.get(&poll_id).unwrap())
-            .collect()
-    }
-
     pub fn delete_poll(&mut self, poll_id: usize) {
         let poll = self.polls
             .get(&poll_id)
@@ -119,6 +88,36 @@ impl Contract {
         self.polls
             .remove(&poll_id);
     }
+
+    pub fn get_polls_for_owner(&self, account_id: AccountId, from_index: Option<u64>, limit: Option<u64>) -> Vec<Poll> {
+        self.polls
+            .iter()
+            .filter(|(_poll_id, poll)| poll.owner == account_id)
+            .skip(from_index.unwrap_or(0) as usize)
+            .take(limit.unwrap_or(10) as usize)
+            .map(|(poll_id, _poll)| self.polls.get(&poll_id).unwrap())
+            .collect()
+    }
+
+    pub fn get_voted_polls(&self, account_id: AccountId, from_index: Option<u64>, limit: Option<u64>) -> Vec<Poll> {
+        self.polls
+            .iter()
+            .filter(|(_poll_id, poll)| poll.options.iter().any(|v| v.voted_users.contains(&account_id)))
+            .skip(from_index.unwrap_or(0) as usize)
+            .take(limit.unwrap_or(10) as usize)
+            .map(|(poll_id, _poll)| self.polls.get(&poll_id).unwrap())
+            .collect()
+    }
+
+    pub fn get_all_polls(&self, from_index: Option<u64>, limit: Option<u64>) -> Vec<Poll> {
+        self.polls
+            .iter()
+            .skip(from_index.unwrap_or(0) as usize)
+            .take(limit.unwrap_or(10) as usize)
+            .map(|(poll_id, _poll)| self.polls.get(&poll_id).unwrap())
+            .collect()
+    }
+
 
     pub fn vote(&mut self, poll_id: usize, variant_id: usize) {
         let poll = &mut self.polls
@@ -136,6 +135,14 @@ impl Contract {
         option.votes = option.votes + 1;
 
         self.polls.insert(&poll_id, &poll);
+    }
+
+    pub fn is_voted(&self,  account_id: AccountId, poll_id: usize) -> bool {
+        let poll = self.polls
+            .get(&poll_id)
+            .expect("Such poll does not exists");
+
+        poll.options.iter().any(|v| v.voted_users.contains(&account_id))
     }
 }
 
