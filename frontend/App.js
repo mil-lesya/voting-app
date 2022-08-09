@@ -1,42 +1,30 @@
-import 'regenerator-runtime/runtime'
 import React from 'react'
-import './assets/css/global.css'
 import {
-  login,
-  logout,
-  get_greeting,
-  set_greeting,
-} from './assets/js/near/utils'
-import getConfig from './assets/js/near/config'
-import { Route, Routes } from 'react-router-dom'
+  Link,
+  Route,
+  Routes,
+  Navigate,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom'
+import 'regenerator-runtime/runtime'
+import styled from 'styled-components'
+import colors from './assets/constants/colors'
+import './assets/css/global.css'
+import bg2 from './assets/img/bg2.svg'
+import footer from './assets/img/footer.svg'
+import { login, logout } from './assets/js/near/utils'
+import Button from './components/Button'
+import AllPolls from './pages/AllPolls'
+import CreatePoll from './pages/CreatePoll'
 import Main from './pages/Main'
+import MyPolls from './pages/MyPolls'
+import NotFound from './pages/NotFound'
+import VotedPolls from './pages/VotedPolls'
 
 export default function App() {
-  // use React Hooks to store greeting in component state
-  const [greeting, setGreeting] = React.useState()
-
-  // when the user has not yet interacted with the form, disable the button
-  const [buttonDisabled, setButtonDisabled] = React.useState(true)
-
-  // after submitting the form, we want to show Notification
-  const [showNotification, setShowNotification] = React.useState(false)
-
-  // The useEffect hook can be used to fire side-effects during render
-  // Learn more: https://reactjs.org/docs/hooks-intro.html
-  React.useEffect(
-    () => {
-      // get_greeting is in near/utils.js
-      get_greeting().then((greetingFromContract) => {
-        setGreeting(greetingFromContract)
-      })
-    },
-
-    // The second argument to useEffect tells React when to re-run the effect
-    // Use an empty array to specify "only run on first render"
-    // This works because signing into NEAR Wallet reloads the page
-    []
-  )
-
+  const location = useLocation()
+  const navigate = useNavigate()
   // if not signed in, return early with sign-in prompt
   if (!window.walletConnection.isSignedIn()) {
     return (
@@ -49,174 +37,142 @@ export default function App() {
   }
 
   return (
-    // use React Fragment, <>, to avoid wrapping elements in unnecessary divs
     <>
-      <button className='link' style={{ float: 'right' }} onClick={logout}>
-        Sign out
-      </button>
-      <main>
-        <h1>
-          <label
-            htmlFor='greeting'
-            style={{
-              color: 'var(--secondary)',
-              borderBottom: '2px solid var(--secondary)',
-            }}
-          >
-            {greeting}
-          </label>
-          {
-            ' ' /* React trims whitespace around tags; insert literal space character when needed */
-          }
-          {window.accountId}!
-        </h1>
-        <form
-          onSubmit={async (event) => {
-            event.preventDefault()
+      {location.pathname === '/' && <Navigate to={`/all`} replace />}
+      <Background src={bg2} alt='background image' />
+      <HeaderContainer>
+        <Logo>Hello, name</Logo>
 
-            // get elements from the form using their id attribute
-            const { fieldset, greeting } = event.target.elements
+        <MenuContainer>
+          <MenuItem>
+            <Link to='/all'>All polls</Link>
+          </MenuItem>
+          <MenuItem>
+            <Link to='/my'>My polls</Link>
+          </MenuItem>
+          <MenuItem>
+            <Link to='/voted'>Voted polls</Link>
+          </MenuItem>
+        </MenuContainer>
 
-            // hold onto new user-entered value from React's SynthenticEvent for use after `await` call
-            const newGreeting = greeting.value
-
-            // disable the form while the value gets updated on-chain
-            fieldset.disabled = true
-
-            try {
-              // make an update call to the smart contract
-              // pass the value that the user entered in the greeting field
-              await set_greeting(newGreeting)
-            } catch (e) {
-              alert(
-                'Something went wrong! ' +
-                  'Maybe you need to sign out and back in? ' +
-                  'Check your browser console for more info.'
-              )
-              throw e
-            } finally {
-              // re-enable the form, whether the call succeeded or failed
-              fieldset.disabled = false
-            }
-
-            // update local `greeting` variable to match persisted value
-            setGreeting(newGreeting)
-
-            // show Notification
-            setShowNotification(true)
-
-            // remove Notification again after css animation completes
-            // this allows it to be shown again next time the form is submitted
-            setTimeout(() => {
-              setShowNotification(false)
-            }, 11000)
+        <Button
+          text='Log out'
+          click={() => {
+            navigate('/')
+            logout()
           }}
-        >
-          <fieldset id='fieldset'>
-            <label
-              htmlFor='greeting'
-              style={{
-                display: 'block',
-                color: 'var(--gray)',
-                marginBottom: '0.5em',
-              }}
-            >
-              Change greeting
-            </label>
-            <div style={{ display: 'flex' }}>
-              <input
-                autoComplete='off'
-                defaultValue={greeting}
-                id='greeting'
-                onChange={(e) => setButtonDisabled(e.target.value === greeting)}
-                style={{ flex: 1 }}
-              />
-              <button
-                disabled={buttonDisabled}
-                style={{ borderRadius: '0 5px 5px 0' }}
-              >
-                Save
-              </button>
-            </div>
-          </fieldset>
-        </form>
-        <p>
-          Look at that! A Hello World app! This greeting is stored on the NEAR
-          blockchain. Check it out:
-        </p>
-        <ol>
-          <li>
-            Look in <code>src/App.js</code> and <code>src/utils.js</code> –
-            you'll see <code>get_greeting</code> and <code>set_greeting</code>{' '}
-            being called on <code>contract</code>. What's this?
-          </li>
-          <li>
-            Ultimately, this <code>contract</code> code is defined in{' '}
-            <code>assembly/main.ts</code> – this is the source code for your{' '}
-            <a
-              target='_blank'
-              rel='noreferrer'
-              href='https://docs.near.org/docs/develop/contracts/overview'
-            >
-              smart contract
-            </a>
-            .
-          </li>
-          <li>
-            When you run <code>yarn dev</code>, the code in{' '}
-            <code>assembly/main.ts</code> gets deployed to the NEAR testnet. You
-            can see how this happens by looking in <code>package.json</code> at
-            the <code>scripts</code> section to find the <code>dev</code>{' '}
-            command.
-          </li>
-        </ol>
-        <hr />
-        <p>
-          To keep learning, check out{' '}
-          <a target='_blank' rel='noreferrer' href='https://docs.near.org'>
-            the NEAR docs
-          </a>{' '}
-          or look through some{' '}
-          <a target='_blank' rel='noreferrer' href='https://examples.near.org'>
-            example apps
-          </a>
-          .
-        </p>
-      </main>
-      {showNotification && <Notification />}
+          style={{
+            width: 127,
+            backgroundColor: colors.violet,
+            color: colors.white,
+          }}
+        />
+      </HeaderContainer>
+      <ContentContainer>
+        <Content>
+          <Routes>
+            <Route path='/all' element={<AllPolls />} />
+            <Route path='/my' element={<MyPolls />} />
+            <Route path='/voted' element={<VotedPolls />} />
+            <Route path='/create' element={<CreatePoll />} />
+            <Route path='*' element={<NotFound />} />
+          </Routes>
+        </Content>
+      </ContentContainer>
+      <FooterContainer>
+        <DevelopersContainer>
+          <Text>Developers</Text>
+          <Text>Mileshko Olesia, Reut Ksenia</Text>
+        </DevelopersContainer>
+        <FooterImage src={footer} alt='footer image' />
+      </FooterContainer>
     </>
   )
 }
 
-// this component gets rendered by App after the form is submitted
-function Notification() {
-  const { networkId } = getConfig(process.env.NODE_ENV || 'development')
-  const urlPrefix = `https://explorer.${networkId}.near.org/accounts`
-
-  return (
-    <aside>
-      <a
-        target='_blank'
-        rel='noreferrer'
-        href={`${urlPrefix}/${window.accountId}`}
-      >
-        {window.accountId}
-      </a>
-      {
-        ' ' /* React trims whitespace around tags; insert literal space character when needed */
-      }
-      called method: 'set_greeting' in contract:{' '}
-      <a
-        target='_blank'
-        rel='noreferrer'
-        href={`${urlPrefix}/${window.contract.contractId}`}
-      >
-        {window.contract.contractId}
-      </a>
-      <footer>
-        <div>✔ Succeeded</div>
-        <div>Just now</div>
-      </footer>
-    </aside>
-  )
-}
+const ContentContainer = styled.div`
+  padding-top: 155px;
+  margin: 0 10vw;
+  min-height: 1150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+`
+const Background = styled.img`
+  width: 100%;
+  z-index: -1;
+  position: absolute;
+`
+const HeaderContainer = styled.div`
+  padding-top: 5vh;
+  padding-left: 10vw;
+  padding-right: 10vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 100%;
+`
+const Logo = styled.span`
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 900;
+  font-size: 40px;
+  line-height: 55px;
+  color: ${colors.white};
+`
+const MenuContainer = styled.div`
+  display: flex;
+  width: 550px;
+  justify-content: space-between;
+`
+const MenuItem = styled.div`
+  a {
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 800;
+    font-size: 28px;
+    line-height: 38px;
+    color: ${colors.white};
+  }
+`
+const Text = styled.p`
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 152.4%;
+  color: ${colors.white};
+`
+const FooterContainer = styled.div`
+  position: absolute;
+  width: 100%;
+`
+const FooterImage = styled.img`
+  position: relative;
+  width: 100%;
+  z-index: -1;
+  bottom: -10px;
+`
+const DevelopersContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  bottom: 0px;
+  padding: 5vh 10vw;
+`
+const Content = styled.div`
+  width: 70vw;
+  background: linear-gradient(
+      0deg,
+      rgba(63, 61, 86, 0.2),
+      rgba(63, 61, 86, 0.2)
+    ),
+    linear-gradient(
+      199.54deg,
+      rgba(219, 0, 255, 0) 0%,
+      rgba(143, 0, 255, 0.44) 100%
+    );
+  backdrop-filter: blur(42px);
+  border-radius: 16px;
+`
