@@ -18,8 +18,8 @@ const Container = styled.div`
   width: 100%;
   border: 1px solid ${colors.white};
   border-radius: 100px;
-  height: 55px;
-  padding: 14px 30px;
+  height: 40px;
+  padding: 10px;
   display: flex;
   align-items: center;
 `
@@ -29,9 +29,9 @@ const CustomInput = styled.input`
   border: none;
   font-family: 'Nunito';
   font-style: normal;
-  font-weight: 600;
-  font-size: 23px;
-  line-height: 29px;
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 26px;
   color: ${colors.white};
   ::placeholder {
     color: ${colors.placeholder};

@@ -23,10 +23,10 @@ const Main = ({ login }) => {
 
         <TitleContainer>
           <Title>Welcome to Voting App with NEAR</Title>
-          <Text style={{ width: '404px', height: '74px' }}>
+          <Text style={{ width: '286px', height: '52px' }}>
             A convenient application for creating polls based on NEAR.
           </Text>
-          <Button style={{ width: 200 }} text='Get started' click={login} />
+          <Button style={{ width: 140 }} text='Get started' click={login} />
         </TitleContainer>
         <Image src={img1} alt='image 1' />
       </Container>
@@ -85,7 +85,7 @@ const Main = ({ login }) => {
             text='Get started'
             click={login}
             style={{
-              width: 200,
+              width: 140,
               backgroundColor: colors.violet,
               color: colors.white,
             }}
@@ -109,7 +109,7 @@ const Background = styled.img`
   position: absolute;
 `
 const Container = styled.div`
-  padding: 5vh 10vw;
+  padding: 5vh 11vw;
   height: 130vh;
 `
 const HeaderContainer = styled.div`
@@ -123,8 +123,8 @@ const Logo = styled.span`
   font-family: 'Nunito';
   font-style: normal;
   font-weight: 900;
-  font-size: 40px;
-  line-height: 55px;
+  font-size: 30px;
+  line-height: 41px;
   color: ${colors.white};
 `
 const TitleContainer = styled.div`
@@ -138,18 +138,18 @@ const Title = styled.p`
   font-family: 'Nunito';
   font-style: normal;
   font-weight: 800;
-  font-size: 55px;
-  line-height: 75px;
+  font-size: 40px;
+  line-height: 55px;
   color: ${colors.white};
-  width: 641px;
-  height: 150px;
+  width: 466px;
+  height: 110px;
 `
 const Text = styled.p`
   font-family: 'Nunito';
   font-style: normal;
   font-weight: 500;
-  font-size: 24px;
-  line-height: 152.4%;
+  font-size: 17px;
+  line-height: 26px;
   color: ${colors.white};
 `
 const ContentContainer = styled.div`
@@ -164,8 +164,8 @@ const SecondTitle = styled.p`
   font-family: 'Nunito';
   font-style: normal;
   font-weight: 800;
-  font-size: 55px;
-  line-height: 75px;
+  font-size: 30px;
+  line-height: 41px;
   color: ${colors.violet};
   margin-top: 10vh;
   margin-bottom: 18vh;
@@ -193,8 +193,8 @@ const StepTitle = styled.p`
   font-family: 'Nunito';
   font-style: normal;
   font-weight: 800;
-  font-size: 40px;
-  line-height: 75px;
+  font-size: 30px;
+  line-height: 41px;
   color: ${colors.violet};
 `
 const DevelopersContainer = styled.div`
@@ -206,8 +206,8 @@ const DevelopersContainer = styled.div`
 `
 const Image = styled.img`
   position: relative;
-  bottom: 250px;
-  left: 470px;
+  bottom: 230px;
+  left: 450px;
 `
 const Arrow = styled.img`
   position: relative;

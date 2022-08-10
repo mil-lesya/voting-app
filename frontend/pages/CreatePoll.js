@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import colors from '../assets/constants/colors'
 import Input from '../components/Input'
-import DatePicker from 'react-date-picker'
+// import DatePicker from 'react-date-picker'
+import DateTimePicker from 'react-datetime-picker'
 import calendarTime from '../assets/img/calendar-time.svg'
 import Button from '../components/Button'
 
@@ -27,24 +28,26 @@ const CreatePoll = ({}) => {
         <DateContainer>
           <div>
             <Title>Start time</Title>
-            <DatePickerStyled
+            <DateTimePickerStyled
               calendarIcon={<CalendarIcon src={calendarTime} />}
               clearIcon={null}
-              format={'dd.MM.y'}
+              format={'y-MM-dd h:mm:ss a'}
               locale='en'
               onChange={(date) => setStart(date)}
               value={start}
+              maxDate={new Date(end) || null}
             />
           </div>
           <div>
             <Title>End time</Title>
-            <DatePickerStyled
+            <DateTimePickerStyled
               calendarIcon={<CalendarIcon src={calendarTime} />}
               clearIcon={null}
-              format={'dd.MM.y'}
+              format={'y-MM-dd h:mm:ss a'}
               locale='en'
               onChange={(date) => setEnd(date)}
               value={end}
+              minDate={new Date(start) || null}
             />
           </div>
         </DateContainer>
@@ -54,10 +57,10 @@ const CreatePoll = ({}) => {
           <Button
             text='Add option'
             style={{
-              width: 150,
-              height: 43,
+              width: 120,
+              height: 35,
               marginBottom: 15,
-              marginLeft: 30,
+              marginLeft: 20,
             }}
             click={() => {
               setCount((prev) => {
@@ -87,10 +90,9 @@ const CreatePoll = ({}) => {
           <Button
             text='Create'
             style={{
-              width: 150,
-              height: 43,
-              marginBottom: 15,
-              marginTop: 30,
+              width: 110,
+              height: 40,
+              marginTop: 20,
             }}
             click={() => {}}
           />
@@ -101,19 +103,19 @@ const CreatePoll = ({}) => {
 }
 
 const Container = styled.div`
-  padding: 40px 50px;
+  padding: 30px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 15px;
+  gap: 10px;
 `
 const Header = styled.div`
   font-family: 'Nunito';
   font-style: normal;
   font-weight: 800;
-  font-size: 35px;
-  line-height: 50px;
+  font-size: 23px;
+  line-height: 30px;
   color: ${colors.white};
   margin-bottom: 15px;
 `
@@ -127,31 +129,31 @@ const ContentContainer = styled.div`
 const Title = styled.div`
   font-family: 'Nunito';
   font-style: normal;
-  font-weight: 700;
-  font-size: 28px;
-  line-height: 40px;
+  font-weight: 600;
+  font-size: 19px;
+  line-height: 28px;
   color: ${colors.white};
-  margin-bottom: 15px;
+  margin-bottom: 8px;
 `
-const DatePickerStyled = styled(DatePicker)`
-  width: 445px;
-  height: 55px;
+const DateTimePickerStyled = styled(DateTimePicker)`
+  width: 430px;
+  height: 40px;
   border-radius: 100px;
   border: 1px solid ${colors.white};
   display: flex;
   align-items: center;
   color: ${colors.white};
-  .react-date-picker__wrapper {
+  .react-datetime-picker__wrapper {
     border: none;
     margin: 10px;
     font-family: 'Nunito';
     font-style: normal;
     font-weight: 600;
-    font-size: 23px;
-    line-height: 29px;
+    font-size: 17px;
+    line-height: 26px;
     color: ${colors.white};
   }
-  .react-date-picker__inputGroup__input {
+  .react-datetime-picker__inputGroup__input {
     color: ${colors.white};
     ::placeholder {
       color: ${colors.placeholder};
@@ -159,15 +161,15 @@ const DatePickerStyled = styled(DatePicker)`
   }
 `
 const CalendarIcon = styled.img`
-  height: 30px;
-  width: 30px;
+  height: 25px;
+  width: 25px;
 `
 const DateContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 50px;
-  margin: 50px 0px;
+  gap: 40px;
+  margin: 30px 0px;
 `
 const OptionsTitleContainer = styled.div`
   display: flex;

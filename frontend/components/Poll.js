@@ -9,9 +9,13 @@ const Poll = ({ name, status, style, click }) => {
   return (
     <Container style={style} onClick={click}>
       <NamePoll>{name}</NamePoll>
-      {status === 'start' && <img src={start} />}
-      {status === 'end' && <img src={end} />}
-      {status === 'wait' && <img src={wait} />}
+      {status === 'start' && (
+        <img src={start} style={{ height: 20, width: 20 }} />
+      )}
+      {status === 'end' && <img src={end} style={{ height: 20, width: 20 }} />}
+      {status === 'wait' && (
+        <img src={wait} style={{ height: 20, width: 20 }} />
+      )}
     </Container>
   )
 }
@@ -24,12 +28,12 @@ const Container = styled.div`
   width: 100%;
   border: 1px solid ${colors.white};
   border-radius: 100px;
-  height: 78px;
-  padding: 0px 40px;
+  height: 45px;
+  padding: 0px 20px;
   background: linear-gradient(
     180deg,
     rgba(255, 255, 255, 0.38) 0%,
-    rgba(255, 255, 255, 0.52) 100%
+    rgba(255, 255, 255, 0.3) 100%
   );
   border: none;
   :hover {
@@ -40,9 +44,9 @@ const Container = styled.div`
 const NamePoll = styled.span`
   font-family: 'Nunito';
   font-style: normal;
-  font-weight: 700;
-  font-size: 25px;
-  line-height: 30px;
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 26px;
   color: ${colors.white};
 `
 export default Poll

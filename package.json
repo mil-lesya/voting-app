@@ -35,7 +35,7 @@
     "@mui/x-date-pickers": "^5.0.0-beta.4",
     "near-api-js": "~0.44.2",
     "react": "~18.1.0",
-    "react-date-picker": "^8.4.0",
+    "react-datetime-picker": "^3.5.0",
     "react-dom": "~18.1.0",
     "react-router-dom": "^6.3.0",
     "react-scripts": "^5.0.1",
