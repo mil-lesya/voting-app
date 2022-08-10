@@ -26,7 +26,8 @@ const MyPolls = ({}) => {
       <Button
         text='Create poll'
         style={{
-          width: 156,
+          width: 125,
+          marginTop: 15,
         }}
         click={() => navigate('/create')}
       />
@@ -35,19 +36,19 @@ const MyPolls = ({}) => {
 }
 
 const Container = styled.div`
-  padding: 40px 50px;
+  padding: 20px 30px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 15px;
+  gap: 10px;
 `
 const Header = styled.div`
   font-family: 'Nunito';
   font-style: normal;
   font-weight: 800;
-  font-size: 35px;
-  line-height: 50px;
+  font-size: 23px;
+  line-height: 30px;
   color: ${colors.white};
   margin-bottom: 15px;
 `
