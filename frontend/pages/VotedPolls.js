@@ -1,9 +1,13 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import colors from '../assets/constants/colors'
+import Button from '../components/Button'
 import Poll from '../components/Poll'
 
 const VotedPolls = ({}) => {
+  const navigate = useNavigate()
+
   const polls = [
     { id: '1', name: 'Best programming language', status: 'start' },
     { id: '2', name: 'Best programming language', status: 'end' },
@@ -20,24 +24,32 @@ const VotedPolls = ({}) => {
       {polls.map((item) => {
         return <Poll key={item.id} name={item.name} status={item.status} />
       })}
+      <Button
+        text='Create poll'
+        style={{
+          width: 125,
+          marginTop: 15,
+        }}
+        click={() => navigate('/create')}
+      />
     </Container>
   )
 }
 
 const Container = styled.div`
-  padding: 40px 50px;
+  padding: 20px 30px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 15px;
+  gap: 10px;
 `
 const Header = styled.div`
   font-family: 'Nunito';
   font-style: normal;
   font-weight: 800;
-  font-size: 35px;
-  line-height: 50px;
+  font-size: 23px;
+  line-height: 30px;
   color: ${colors.white};
   margin-bottom: 15px;
 `

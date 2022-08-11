@@ -62,7 +62,7 @@ export default function App() {
             logout()
           }}
           style={{
-            width: 127,
+            width: 100,
             backgroundColor: colors.violet,
             color: colors.white,
           }}
@@ -117,8 +117,8 @@ const Logo = styled.span`
   font-family: 'Nunito';
   font-style: normal;
   font-weight: 900;
-  font-size: 40px;
-  line-height: 55px;
+  font-size: 30px;
+  line-height: 41px;
   color: ${colors.white};
 `
 const MenuContainer = styled.div`
@@ -130,9 +130,9 @@ const MenuItem = styled.div`
   a {
     font-family: 'Nunito';
     font-style: normal;
-    font-weight: 800;
-    font-size: 28px;
-    line-height: 38px;
+    font-weight: 700;
+    font-size: 17px;
+    line-height: 23px;
     color: ${colors.white};
   }
 `
@@ -140,8 +140,8 @@ const Text = styled.p`
   font-family: 'Nunito';
   font-style: normal;
   font-weight: 500;
-  font-size: 24px;
-  line-height: 152.4%;
+  font-size: 17px;
+  line-height: 26px;
   color: ${colors.white};
 `
 const FooterContainer = styled.div`
@@ -162,7 +162,7 @@ const DevelopersContainer = styled.div`
   padding: 5vh 10vw;
 `
 const Content = styled.div`
-  width: 70vw;
+  width: 55vw;
   background: linear-gradient(
       0deg,
       rgba(63, 61, 86, 0.2),

@@ -3,49 +3,70 @@ import getConfig from './config'
 
 const nearConfig = getConfig(process.env.NODE_ENV || 'development')
 
-// Initialize contract & set global variables
 export async function initContract() {
-  // Initialize connection to the NEAR testnet
   const near = await connect(Object.assign({ deps: { keyStore: new keyStores.BrowserLocalStorageKeyStore() } }, nearConfig))
 
-  // Initializing Wallet based Account. It can work with NEAR testnet wallet that
-  // is hosted at https://wallet.testnet.near.org
   window.walletConnection = new WalletConnection(near)
-
-  // Getting the Account ID. If still unauthorized, it's just empty string
   window.accountId = window.walletConnection.getAccountId()
-
-  // Initializing our contract APIs by contract name and configuration
   window.contract = await new Contract(window.walletConnection.account(), nearConfig.contractName, {
-    // View methods are read only. They don't modify the state, but usually return some value.
-    viewMethods: ['get_greeting'],
-    // Change methods can modify the state. But you don't receive the returned value when called.
-    changeMethods: ['set_greeting'],
+    viewMethods: ['get_poll', 'get_voted_polls', 'get_polls_for_owner', 'get_all_polls', 'is_voted'],
+    changeMethods: ['create_poll', 'delete_poll', 'vote'],
   })
 }
 
 export function logout() {
   window.walletConnection.signOut()
-  // reload page
   window.location.replace(window.location.origin + window.location.pathname)
 }
 
 export function login() {
-  // Allow the current app to make calls to the specified contract on the
-  // user's behalf.
-  // This works by creating a new access key for the user's account and storing
-  // the private key in localStorage.
   window.walletConnection.requestSignIn(nearConfig.contractName)
 }
 
-export async function set_greeting(message){
-  let response = await window.contract.set_greeting({
-    args:{message: message}
+export async function create_poll(description, start_time, end_time, options) {
+  return await window.contract.create_poll({
+    args: { description, start_time, end_time, options }
   })
-  return response
 }
 
-export async function get_greeting(){
-  let greeting = await window.contract.get_greeting()
-  return greeting
+export async function get_poll(poll_id) {
+  return await window.contract.get_poll({
+    args: { poll_id }
+  })
+}
+
+export async function delete_poll(poll_id) {
+  return await window.contract.delete_poll({
+    args: { poll_id }
+  })
+}
+
+export async function get_polls_for_owner(account_id, from_index, limit) {
+  return await window.contract.get_polls_for_owner({
+    args: { account_id, from_index, limit }
+  })
+}
+
+export async function get_voted_polls(account_id, from_index, limit) {
+  return await window.contract.get_voted_polls({
+    args: { account_id, from_index, limit }
+  })
+}
+
+export async function get_all_polls(from_index, limit) {
+  return await window.contract.get_all_polls({
+    args: { from_index, limit }
+  })
+}
+
+export async function vote(poll_id, variant_id) {
+  return await window.contract.vote({
+    args: { poll_id, variant_id }
+  })
+}
+
+export async function is_voted(account_id, poll_id) {
+  return await window.contract.is_voted({
+    args: { account_id, poll_id }
+  })
 }

@@ -12,15 +12,15 @@ const Button = ({ text, style, click }) => {
 
 const ButtonContainer = styled.div`
   cursor: pointer;
-  width: 127px;
-  height: 53px;
+  width: 100px;
+  height: 40px;
   background: ${colors.white};
   border-radius: 50px;
   font-family: 'Nunito';
   font-style: normal;
   font-weight: 700;
-  font-size: 20px;
-  line-height: 27px;
+  font-size: 15px;
+  line-height: 20px;
   color: ${colors.violet};
   display: flex;
   align-items: center;
