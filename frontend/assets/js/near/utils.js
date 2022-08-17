@@ -43,13 +43,13 @@ export async function delete_poll(poll_id) {
 
 export async function get_polls_for_owner(account_id, from_index, limit) {
   return await window.contract.get_polls_for_owner({
-    args: { account_id, from_index, limit }
+     account_id, from_index, limit
   })
 }
 
 export async function get_voted_polls(account_id, from_index, limit) {
   return await window.contract.get_voted_polls({
-    args: { account_id, from_index, limit }
+     account_id, from_index, limit
   })
 }
 

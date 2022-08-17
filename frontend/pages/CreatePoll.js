@@ -18,7 +18,7 @@ const CreatePoll = ({}) => {
   const navigate = useNavigate()
 
   const handleSubmit = async () => {
-    create_poll(description, start.toString(), end.toString(), Object.values(options))
+    create_poll(description.toString(), start.toString(), end.toString(), Object.values(options))
       .then(() => navigate('/my'))
       .catch((e) => console.log(e))
   }
@@ -90,7 +90,7 @@ const CreatePoll = ({}) => {
                 setValue={(e) =>
                   setOptions((prev) => ({
                     ...prev,
-                    [`option${item.id}`]: e.target.value,
+                    [`option${item.id}`]: e.target.value.toString(),
                   }))
                 }
               />
