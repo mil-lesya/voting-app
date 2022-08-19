@@ -1,26 +1,28 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import colors from '../assets/constants/colors'
 import Input from '../components/Input'
 import DateTimePicker from 'react-datetime-picker'
 import calendarTime from '../assets/img/calendar-time.svg'
 import Button from '../components/Button'
-import {create_poll} from '../assets/js/near/utils'
-import {useNavigate} from 'react-router-dom'
+import { create_poll } from '../assets/js/near/utils'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 const CreatePoll = ({}) => {
   const [description, setDescription] = useState('')
   const [start, setStart] = useState('')
   const [end, setEnd] = useState('')
-  const [options, setOptions] = useState({option1: '', option2: ''})
-  const [count, setCount] = useState([{id: '1'}, {id: '2'}])
-
-  const navigate = useNavigate()
+  const [options, setOptions] = useState({ option1: '', option2: '' })
+  const [count, setCount] = useState([{ id: '1' }, { id: '2' }])
+  let location = useLocation()
 
   const handleSubmit = async () => {
-    create_poll(description, start.toString(), end.toString(), Object.values(options))
-      .then(() => navigate('/my'))
-      .catch((e) => console.log(e))
+    create_poll(
+      description,
+      start.toString(),
+      end.toString(),
+      Object.values(options)
+    ).catch((e) => console.log(e))
   }
 
   return (
@@ -38,10 +40,10 @@ const CreatePoll = ({}) => {
           <div>
             <Title>Start time</Title>
             <DateTimePickerStyled
-              calendarIcon={<CalendarIcon src={calendarTime}/>}
+              calendarIcon={<CalendarIcon src={calendarTime} />}
               clearIcon={null}
               format={'y-MM-dd h:mm:ss a'}
-              locale="en"
+              locale='en'
               onChange={(date) => setStart(date)}
               value={start}
               maxDate={new Date(end) || null}
@@ -50,10 +52,10 @@ const CreatePoll = ({}) => {
           <div>
             <Title>End time</Title>
             <DateTimePickerStyled
-              calendarIcon={<CalendarIcon src={calendarTime}/>}
+              calendarIcon={<CalendarIcon src={calendarTime} />}
               clearIcon={null}
               format={'y-MM-dd h:mm:ss a'}
-              locale="en"
+              locale='en'
               onChange={(date) => setEnd(date)}
               value={end}
               minDate={new Date(start) || null}
@@ -64,7 +66,7 @@ const CreatePoll = ({}) => {
         <OptionsTitleContainer>
           <Title>Options</Title>
           <Button
-            text="Add option"
+            text='Add option'
             style={{
               width: 120,
               height: 35,
@@ -74,7 +76,7 @@ const CreatePoll = ({}) => {
             click={() => {
               setCount((prev) => {
                 if (prev.length <= 9)
-                  return [...prev, {id: `${prev.length + 1}`}]
+                  return [...prev, { id: `${prev.length + 1}` }]
                 return [...prev]
               })
             }}
@@ -96,15 +98,17 @@ const CreatePoll = ({}) => {
               />
             )
           })}
-          <Button
-            text="Create"
-            style={{
-              width: 110,
-              height: 40,
-              marginTop: 20,
-            }}
-            click={() => handleSubmit()}
-          />
+          <Link to={location.pathname} state={{ backgroundLocation: location }}>
+            <Button
+              text='Create'
+              style={{
+                width: 110,
+                height: 40,
+                marginTop: 20,
+              }}
+              click={() => handleSubmit()}
+            />
+          </Link>
         </InputsContainer>
       </ContentContainer>
     </Container>
@@ -123,8 +127,8 @@ const Header = styled.div`
   font-family: 'Nunito';
   font-style: normal;
   font-weight: 800;
-  font-size: 23px;
-  line-height: 30px;
+  font-size: 25px;
+  line-height: 35px;
   color: ${colors.white};
   margin-bottom: 15px;
 `
@@ -145,7 +149,6 @@ const Title = styled.div`
   margin-bottom: 8px;
 `
 const DateTimePickerStyled = styled(DateTimePicker)`
-  width: 430px;
   height: 40px;
   border-radius: 100px;
   border: 1px solid ${colors.white};
@@ -153,6 +156,8 @@ const DateTimePickerStyled = styled(DateTimePicker)`
   align-items: center;
   color: ${colors.white};
   .react-datetime-picker__wrapper {
+    max-width: 430px;
+    min-width: 268px;
     border: none;
     margin: 10px;
     font-family: 'Nunito';

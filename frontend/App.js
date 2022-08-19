@@ -18,6 +18,7 @@ import Button from './components/Button'
 import AllPolls from './pages/AllPolls'
 import CreatePoll from './pages/CreatePoll'
 import Main from './pages/Main'
+import Modal from './pages/Modal'
 import MyPolls from './pages/MyPolls'
 import NotFound from './pages/NotFound'
 import VotedPolls from './pages/VotedPolls'
@@ -25,6 +26,7 @@ import VotedPolls from './pages/VotedPolls'
 export default function App() {
   const location = useLocation()
   const navigate = useNavigate()
+  let state = location.state
   // if not signed in, return early with sign-in prompt
   if (!window.walletConnection.isSignedIn()) {
     return (
@@ -70,7 +72,7 @@ export default function App() {
       </HeaderContainer>
       <ContentContainer>
         <Content>
-          <Routes>
+          <Routes location={state?.backgroundLocation || location}>
             <Route path='/all' element={<AllPolls />} />
             <Route path='/my' element={<MyPolls />} />
             <Route path='/voted' element={<VotedPolls />} />
@@ -86,6 +88,15 @@ export default function App() {
         </DevelopersContainer>
         <FooterImage src={footer} alt='footer image' />
       </FooterContainer>
+
+      {state?.backgroundLocation && (
+        <Routes>
+          <Route
+            path={'/create'}
+            element={<Modal handleClose={() => navigate('my')} />}
+          />
+        </Routes>
+      )}
     </>
   )
 }
