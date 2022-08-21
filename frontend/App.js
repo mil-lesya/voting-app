@@ -43,7 +43,7 @@ export default function App() {
       {location.pathname === '/' && <Navigate to={`/all`} replace />}
       <Background src={bg2} alt='background image' />
       <HeaderContainer>
-        <Logo>Hello, name</Logo>
+        <Logo>Hello, {accountId ? accountId : 'User'}</Logo>
 
         <MenuContainer>
           <MenuItem>
