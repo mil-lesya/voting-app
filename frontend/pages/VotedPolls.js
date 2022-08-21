@@ -46,8 +46,8 @@ const Header = styled.div`
   font-family: 'Nunito';
   font-style: normal;
   font-weight: 800;
-  font-size: 23px;
-  line-height: 30px;
+  font-size: 25px;
+  line-height: 35px;
   color: ${colors.white};
   margin-bottom: 15px;
 `

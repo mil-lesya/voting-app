@@ -87,7 +87,7 @@ a:hover,
 a:focus,
 .link:hover,
 .link:focus {
-  text-decoration: underline;
+  text-decoration: none;
 }
 a:active,
 .link:active {
