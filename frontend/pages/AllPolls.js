@@ -22,7 +22,14 @@ const AllPolls = ({}) => {
     <Container>
       <Header>All polls</Header>
       {polls.map((item) => {
-        return <Poll key={item.id} name={item.name} status={item.status} />
+        return (
+          <Poll
+            key={item.id}
+            name={item.name}
+            status={item.status}
+            click={() => navigate(`/poll/${item.id}`, { id: item.id })}
+          />
+        )
       })}
       <Button
         text='Create poll'
