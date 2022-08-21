@@ -92,6 +92,7 @@ impl Contract {
     pub fn get_polls_for_owner(&self, account_id: AccountId, from_index: Option<u64>, limit: Option<u64>) -> Vec<Poll> {
         self.polls
             .iter()
+            .rev()
             .filter(|(_poll_id, poll)| poll.owner == account_id)
             .skip(from_index.unwrap_or(0) as usize)
             .take(limit.unwrap_or(10) as usize)
@@ -102,6 +103,7 @@ impl Contract {
     pub fn get_voted_polls(&self, account_id: AccountId, from_index: Option<u64>, limit: Option<u64>) -> Vec<Poll> {
         self.polls
             .iter()
+            .rev()
             .filter(|(_poll_id, poll)| poll.options.iter().any(|v| v.voted_users.contains(&account_id)))
             .skip(from_index.unwrap_or(0) as usize)
             .take(limit.unwrap_or(10) as usize)
@@ -112,6 +114,7 @@ impl Contract {
     pub fn get_all_polls(&self, from_index: Option<u64>, limit: Option<u64>) -> Vec<Poll> {
         self.polls
             .iter()
+            .rev()
             .skip(from_index.unwrap_or(0) as usize)
             .take(limit.unwrap_or(10) as usize)
             .map(|(poll_id, _poll)| self.polls.get(&poll_id).unwrap())
