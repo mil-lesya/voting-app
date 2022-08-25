@@ -27,7 +27,7 @@ const AllPolls = ({}) => {
             key={item.id}
             name={item.description}
             status={item.status}
-            click={() => navigate(`/poll/${item.id}`, { id: item.id })}
+            click={() => navigate(`/poll/${item.id}`, {state: { id: item.id }})}
           />
         )
       })}

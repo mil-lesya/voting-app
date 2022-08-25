@@ -7,6 +7,8 @@ import calendarTime from '../assets/img/calendar-time.svg'
 import Button from '../components/Button'
 import { create_poll } from '../assets/js/near/utils'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import Modal from '../components/Modal'
+import done from '../assets/img/done.svg'
 
 const CreatePoll = ({}) => {
   const [description, setDescription] = useState('')
@@ -14,11 +16,14 @@ const CreatePoll = ({}) => {
   const [end, setEnd] = useState('')
   const [options, setOptions] = useState({ option1: '', option2: '' })
   const [count, setCount] = useState([{ id: '1' }, { id: '2' }])
+  const [visibleModal, setVisibleModal] = useState(false)
+
   let location = useLocation()
+  const navigate = useNavigate()
 
   const handleSubmit = async () => {
-    create_poll(description, start.toString(), end.toString(), Object.values(options))
-      .then(() => navigate('/my'))
+    create_poll(description.toString(), start.toString(), end.toString(), Object.values(options))
+      .then(() => setVisibleModal(true))
       .catch((e) => console.log(e))
   }
 
@@ -95,7 +100,6 @@ const CreatePoll = ({}) => {
               />
             )
           })}
-          <Link to={location.pathname} state={{ backgroundLocation: location }}>
             <Button
               text='Create'
               style={{
@@ -105,7 +109,23 @@ const CreatePoll = ({}) => {
               }}
               click={() => handleSubmit()}
             />
-          </Link>
+         <Modal visible={visibleModal} setVisible={setVisibleModal} backgroundStyle={{}} containerStyle={{height: 300, width: 400}}>
+           <TitleContainer>
+             <DoneIcon src={done} />
+             <TitleModal>The poll was created successfully</TitleModal>
+           </TitleContainer>
+           <Button
+             click={() => {navigate('/my')
+               setVisibleModal(false)}}
+             text='OK'
+             style={{
+               fontSize: 25,
+               backgroundColor: colors.violet,
+               color: colors.white,
+               height: 50,
+             }}
+           />
+         </Modal>
         </InputsContainer>
       </ContentContainer>
     </Container>
@@ -194,5 +214,26 @@ const InputsContainer = styled.div`
   justify-content: center;
   gap: 15px;
   width: 100%;
+`
+
+const DoneIcon = styled.img`
+  height: 100px;
+  width: 100px;
+`
+const TitleContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+`
+const TitleModal = styled.p`
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 800;
+  font-size: 23px;
+  line-height: 30px;
+  color: ${colors.violet};
+  text-align: center;
+  margin-top: 15px;
 `
 export default CreatePoll

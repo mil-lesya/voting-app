@@ -31,7 +31,7 @@ export async function create_poll(description, start_time, end_time, options) {
 
 export async function get_poll(poll_id) {
   return await window.contract.get_poll({
-    args: { poll_id }
+     poll_id
   })
 }
 
@@ -67,6 +67,6 @@ export async function vote(poll_id, variant_id) {
 
 export async function is_voted(account_id, poll_id) {
   return await window.contract.is_voted({
-    args: { account_id, poll_id }
+    account_id, poll_id
   })
 }

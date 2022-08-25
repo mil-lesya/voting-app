@@ -19,8 +19,8 @@ const VotedPolls = ({}) => {
   return (
     <Container>
       <Header>Voted polls</Header>
-      {polls.map((item, index) => {
-        return <Poll key={index} name={item.description} status={item.status} />
+      {polls.map((item) => {
+        return (<Poll key={item.id} name={item.description} status={item.status} click={() => navigate(`/poll/${item.id}`, {state: { id: item.id }})} />)
       })}
       <Button
         text='Create poll'

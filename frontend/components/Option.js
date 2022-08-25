@@ -4,45 +4,50 @@ import colors from '../assets/constants/colors'
 import votedIcon from '../assets/img/voted.svg'
 
 const Option = ({
-  name,
-  percent,
-  style,
-  textStyle,
-  click,
-  votedPull,
-  votedOption,
-}) => {
+                  name,
+                  percent,
+                  style,
+                  textStyle,
+                  click,
+                  votedPoll,
+                  votedOption,
+                  status
+                }) => {
   const [stylePercent, setStylePercent] = useState(style)
   const [styleContainer, setStyleContainer] = useState()
   const [votedValue, setVotedValue] = useState(votedOption)
 
   const vote = () => {
     click()
-    setVotedValue(true)
     setStylePercent({ ...style, width: `${percent}%` })
     setStyleContainer({
       background: 'none',
       border: `1px solid ${colors.white}`,
     })
+    if (!votedPoll && status === 'start') {
+      setVotedValue(true)
+    }
   }
 
   useEffect(() => {
-    setStylePercent(votedPull ? { ...style, width: `${percent}%` } : null)
+    setStylePercent((votedPoll || status !== 'start') ? { ...style, width: `${percent}%` } : null)
     setStyleContainer(
-      votedPull
+      (votedPoll || status !== 'start')
         ? { background: 'none', border: `1px solid ${colors.white}` }
         : null
     )
-  }, [votedPull])
+  }, [votedPoll])
+
+  console.log(votedPoll)
 
   return (
     <>
       <Container style={styleContainer} onClick={vote}>
+        <NameOption style={votedPoll ? textStyle : null}>{name}</NameOption>
         <Percent style={stylePercent}>
-          <NameOption style={votedPull ? textStyle : null}>{name}</NameOption>
-          {votedPull && <PercentText style={textStyle}>{percent}%</PercentText>}
+            <PercentText percent={percent} style={votedPoll ? textStyle : null}>{percent}%</PercentText>
         </Percent>
-        {votedValue && <VotedIcon src={votedIcon} />}
+        {votedValue && <VotedIcon src={votedIcon}/>}
       </Container>
     </>
   )
@@ -57,11 +62,9 @@ const Container = styled.div`
   border: 1px solid ${colors.white};
   border-radius: 100px;
   height: 45px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.38) 0%,
-    rgba(255, 255, 255, 0.3) 100%
-  );
+  background: linear-gradient(180deg,
+  rgba(255, 255, 255, 0.38) 0%,
+  rgba(255, 255, 255, 0.3) 100%);
   border: none;
   :hover {
     background: none;
@@ -71,21 +74,22 @@ const Container = styled.div`
 const Percent = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   width: 0%;
   background-color: ${colors.violet};
   border-radius: 100px;
   height: 43px;
   transition: width 1s ease-in-out 0.3s;
 `
-const NameOption = styled.div`
+const NameOption = styled.p`
+  position: absolute;
   font-family: 'Nunito';
   font-style: normal;
   font-weight: 500;
   font-size: 17px;
   line-height: 26px;
   color: ${colors.white};
-  padding: 0px 20px;
+  padding: 0 20px;
 `
 const PercentText = styled.div`
   font-family: 'Nunito';
@@ -94,11 +98,12 @@ const PercentText = styled.div`
   font-size: 17px;
   line-height: 26px;
   color: ${colors.white};
-  padding: 0px 20px;
+  padding: ${(props) => (props.percent === 100 ? '0px 50px' : '0px 20px')};
 `
 const VotedIcon = styled.img`
+  position: absolute;
+  right: 40px;
   height: 25px;
   width: 25px;
-  margin-right: 20px;
 `
 export default Option
