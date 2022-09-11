@@ -13,16 +13,23 @@ const AllPolls = ({}) => {
   const [polls, setPolls] = useState([])
 
   useEffect(() => {
-    get_all_polls( 0, 10)
+    get_all_polls(0, 10)
       .then((polls) => setPolls(getPollsWithStatus(polls)))
       .catch((e) => console.log(e))
-  }, []);
+  }, [])
 
   return (
     <Container>
       <Header>All polls</Header>
-      {polls.map((item, index) => {
-        return <Poll key={index} name={item.description} status={item.status} />
+      {polls.map((item) => {
+        return (
+          <Poll
+            key={item.id}
+            name={item.description}
+            status={item.status}
+            click={() => navigate(`/poll/${item.id}`, {state: { id: item.id }})}
+          />
+        )
       })}
       <Button
         text='Create poll'

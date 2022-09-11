@@ -21,6 +21,7 @@ import Main from './pages/Main'
 import Modal from './pages/Modal'
 import MyPolls from './pages/MyPolls'
 import NotFound from './pages/NotFound'
+import Poll from './pages/Poll'
 import VotedPolls from './pages/VotedPolls'
 
 export default function App() {
@@ -77,6 +78,7 @@ export default function App() {
             <Route path='/my' element={<MyPolls />} />
             <Route path='/voted' element={<VotedPolls />} />
             <Route path='/create' element={<CreatePoll />} />
+            <Route path='/poll/:id' element={<Poll />} />
             <Route path='*' element={<NotFound />} />
           </Routes>
         </Content>
