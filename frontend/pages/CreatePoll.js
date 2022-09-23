@@ -6,7 +6,7 @@ import DateTimePicker from 'react-datetime-picker'
 import calendarTime from '../assets/img/calendar-time.svg'
 import Button from '../components/Button'
 import { create_poll } from '../assets/js/near/utils'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import Modal from '../components/Modal'
 import done from '../assets/img/done.svg'
 
@@ -21,7 +21,12 @@ const CreatePoll = ({}) => {
   const navigate = useNavigate()
 
   const handleSubmit = async () => {
-    create_poll(description.toString(), start, end, Object.values(options))
+    create_poll(
+      description.toString(),
+      start,
+      end,
+      Object.values(options)
+    )
       .then(() => setVisibleModal(true))
       .catch((e) => console.log(e))
   }
@@ -99,32 +104,39 @@ const CreatePoll = ({}) => {
               />
             )
           })}
+          <Button
+            text='Create'
+            style={{
+              width: 110,
+              height: 40,
+              marginTop: 20,
+            }}
+            click={() => handleSubmit()}
+          />
+          <Modal
+            visible={visibleModal}
+            setVisible={setVisibleModal}
+            backgroundStyle={{}}
+            containerStyle={{ height: 300, width: 400 }}
+          >
+            <TitleContainer>
+              <DoneIcon src={done} />
+              <TitleModal>The poll was created successfully</TitleModal>
+            </TitleContainer>
             <Button
-              text='Create'
-              style={{
-                width: 110,
-                height: 40,
-                marginTop: 20,
+              click={() => {
+                navigate('/my')
+                setVisibleModal(false)
               }}
-              click={() => handleSubmit()}
+              text='OK'
+              style={{
+                fontSize: 25,
+                backgroundColor: colors.violet,
+                color: colors.white,
+                height: 50,
+              }}
             />
-         <Modal visible={visibleModal} setVisible={setVisibleModal} backgroundStyle={{}} containerStyle={{height: 300, width: 400}}>
-           <TitleContainer>
-             <DoneIcon src={done} />
-             <TitleModal>The poll was created successfully</TitleModal>
-           </TitleContainer>
-           <Button
-             click={() => {navigate('/my')
-               setVisibleModal(false)}}
-             text='OK'
-             style={{
-               fontSize: 25,
-               backgroundColor: colors.violet,
-               color: colors.white,
-               height: 50,
-             }}
-           />
-         </Modal>
+          </Modal>
         </InputsContainer>
       </ContentContainer>
     </Container>

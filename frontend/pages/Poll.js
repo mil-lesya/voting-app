@@ -3,8 +3,14 @@ import styled from 'styled-components'
 import colors from '../assets/constants/colors'
 import Option from '../components/Option'
 import { useLocation } from 'react-router-dom'
-import { get_poll, get_polls_for_owner, is_voted, vote } from '../assets/js/near/utils'
+import {
+  get_poll,
+  get_polls_for_owner,
+  is_voted,
+  vote,
+} from '../assets/js/near/utils'
 import { getPollsWithStatus } from '../functions/getPollsWithStatus'
+import Button from '../components/Button'
 
 const Poll = ({}) => {
   const location = useLocation()
@@ -31,21 +37,23 @@ const Poll = ({}) => {
   const handleVote = (optionId) => {
     if (!votedPoll && poll.status === 'start') {
       vote(pollId, optionId)
-        .then(() => is_voted(accountId, pollId)
-          .then((res) => setVotedPoll(res))
-          .catch((e) => console.log(e)))
+        .then(() =>
+          is_voted(accountId, pollId)
+            .then((res) => setVotedPoll(res))
+            .catch((e) => console.log(e))
+        )
         .catch((e) => console.log(e))
       setVotedOption(optionId)
     }
   }
 
   const getPercent = (optionId) => {
-    let sum = 0;
-    poll.options.forEach((option)=> {
+    let sum = 0
+    poll.options.forEach((option) => {
       sum += option.votes
     })
-    let variant = poll.options.find(v => v.id === optionId)
-    return sum ? variant.votes * 100 / sum : 0;
+    let variant = poll.options.find((v) => v.id === optionId)
+    return sum ? (variant.votes * 100) / sum : 0
   }
 
   return (
@@ -68,6 +76,16 @@ const Poll = ({}) => {
           />
         )
       })}
+      <Button
+        text='Delete'
+        style={{
+          width: 110,
+          height: 40,
+          marginTop: 20,
+          color: colors.active,
+        }}
+        click={() => {}}
+      />
     </Container>
   )
 }
