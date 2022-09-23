@@ -393,7 +393,9 @@ dependencies = [
 name = "greeter"
 version = "1.0.0"
 dependencies = [
+ "chrono",
  "getrandom 0.2.7",
+ "log",
  "nanoid",
  "near-sdk",
  "serde",

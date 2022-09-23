@@ -1,3 +1,4 @@
+use chrono::DateTime;
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::{AccountId, env, near_bindgen, PanicOnDefault};
 use near_sdk::collections::{UnorderedMap};
@@ -128,6 +129,13 @@ impl Contract {
             .expect("Such poll does not exists");
         let voter = env::signer_account_id();
 
+        let start_time = DateTime::parse_from_rfc3339(&poll.start_time.as_ref().unwrap()).unwrap();
+        let end_time = DateTime::parse_from_rfc3339(&poll.end_time.as_ref().unwrap()).unwrap();
+        let date_now = chrono::offset::Utc::now();
+
+        assert_eq!(date_now < start_time, false, "Voting has not started yet");
+        assert_eq!(date_now > end_time, false, "Voting has ended");
+
         assert_eq!(poll.options.iter().any(|v| v.voted_users.contains(&voter)), false, "This user has already voted!");
 
         let option = poll.options.iter_mut().find(|v| v.id == variant_id).unwrap();
@@ -175,8 +183,8 @@ mod tests {
         let mut contract = Contract::new_default();
 
         let description = "Best programming language!";
-        let start_time = "1656874039533";
-        let end_time = "1656874072974";
+        let start_time = "2022-09-11T21:00:00.000Z";
+        let end_time = "20223-09-11T21:00:00.000Z";
         let options = Vec::from(["Java".to_string(), "Rust".to_string(), "C++".to_string()]);
 
         let created_poll = contract.create_poll(
@@ -200,8 +208,8 @@ mod tests {
         let mut contract = Contract::new_default();
 
         let description = "Best programming language!";
-        let start_time = "1656874039533";
-        let end_time = "1656874072974";
+        let start_time = "2022-09-11T21:00:00.000Z";
+        let end_time = "2022-09-18T21:00:00.000Z";
         let options = Vec::from(["Java".to_string(), "Rust".to_string(), "C++".to_string()]);
 
         contract.create_poll(
@@ -227,8 +235,8 @@ mod tests {
         let mut contract = Contract::new_default();
 
         let description = "Best programming language!";
-        let start_time = "1656874039533";
-        let end_time = "1656874072974";
+        let start_time = "2022-09-11T21:00:00.000Z";
+        let end_time = "2022-09-19T21:00:00.000Z";
         let options = Vec::from(["Java".to_string(), "Rust".to_string(), "C++".to_string()]);
 
         contract.create_poll(
@@ -251,8 +259,8 @@ mod tests {
         let mut contract = Contract::new_default();
 
         let description = "Best programming language!";
-        let start_time = "1656874039533";
-        let end_time = "1656874072974";
+        let start_time = "2022-09-11T21:00:00.000Z";
+        let end_time = "2022-09-19T21:00:00.000Z";
         let options = Vec::from(["Java".to_string(), "Rust".to_string(), "C++".to_string()]);
 
         contract.create_poll(
@@ -277,8 +285,8 @@ mod tests {
         let mut contract = Contract::new_default();
 
         let description = "Best programming language!";
-        let start_time = "1656874039533";
-        let end_time = "1656874072974";
+        let start_time = "2022-09-11T21:00:00.000Z";
+        let end_time = "2022-09-21T21:00:00.000Z";
         let options = Vec::from(["Java".to_string(), "Rust".to_string(), "C++".to_string()]);
 
         contract.create_poll(
@@ -318,8 +326,8 @@ mod tests {
         let mut contract = Contract::new_default();
 
         let description = "Best programming language!";
-        let start_time = "1656874039533";
-        let end_time = "1656874072974";
+        let start_time = "2022-09-11T21:00:00.000Z";
+        let end_time = "2022-09-19T21:00:00.000Z";
         let options = Vec::from(["Java".to_string(), "Rust".to_string(), "C++".to_string()]);
 
         contract.create_poll(
@@ -358,8 +366,8 @@ mod tests {
         let mut contract = Contract::new_default();
 
         let description = "Best programming language!";
-        let start_time = "1656874039533";
-        let end_time = "1656874072974";
+        let start_time = "2022-09-11T21:00:00.000Z";
+        let end_time = "2029-09-19T21:00:00.000Z";
         let options = Vec::from(["Java".to_string(), "Rust".to_string(), "C++".to_string()]);
 
         let created_poll = contract.create_poll(
@@ -380,6 +388,50 @@ mod tests {
     }
 
     #[test]
+    #[should_panic(expected = "Voting has ended")]
+    fn test_vote_ended_poll() {
+        let context = get_context(accounts(1));
+        testing_env!(context.build());
+        let mut contract = Contract::new_default();
+
+        let description = "Best programming language!";
+        let start_time = "2022-09-11T21:00:00.000Z";
+        let end_time = "2022-09-19T21:00:00.000Z";
+        let options = Vec::from(["Java".to_string(), "Rust".to_string(), "C++".to_string()]);
+
+        let created_poll = contract.create_poll(
+            description.to_string(),
+            Option::from(start_time.to_string()),
+            Option::from(end_time.to_string()),
+            options.clone(),
+        );
+
+        contract.vote(created_poll.id, created_poll.options.first().unwrap().id);
+    }
+
+    #[test]
+    #[should_panic(expected = "Voting has not started yet")]
+    fn test_vote_not_started_poll() {
+        let context = get_context(accounts(1));
+        testing_env!(context.build());
+        let mut contract = Contract::new_default();
+
+        let description = "Best programming language!";
+        let start_time = "2023-09-11T21:00:00.000Z";
+        let end_time = "2023-09-19T21:00:00.000Z";
+        let options = Vec::from(["Java".to_string(), "Rust".to_string(), "C++".to_string()]);
+
+        let created_poll = contract.create_poll(
+            description.to_string(),
+            Option::from(start_time.to_string()),
+            Option::from(end_time.to_string()),
+            options.clone(),
+        );
+
+        contract.vote(created_poll.id, created_poll.options.first().unwrap().id);
+    }
+
+    #[test]
     #[should_panic(expected = "This user has already voted!")]
     fn test_vote_again() {
         let context = get_context(accounts(1));
@@ -387,8 +439,8 @@ mod tests {
         let mut contract = Contract::new_default();
 
         let description = "Best programming language!";
-        let start_time = "1656874039533";
-        let end_time = "1656874072974";
+        let start_time = "2022-09-18T21:00:00.000Z";
+        let end_time = "2025-09-21T21:00:00.000Z";
         let options = Vec::from(["Java".to_string(), "Rust".to_string(), "C++".to_string()]);
 
         let created_poll = contract.create_poll(
@@ -409,8 +461,8 @@ mod tests {
         let mut contract = Contract::new_default();
 
         let description = "Best programming language!";
-        let start_time = "1656874039533";
-        let end_time = "1656874072974";
+        let start_time = "2022-09-11T21:00:00.000Z";
+        let end_time = "2024-09-19T21:00:00.000Z";
         let options = Vec::from(["Java".to_string(), "Rust".to_string(), "C++".to_string()]);
 
         let created_poll = contract.create_poll(
@@ -433,8 +485,8 @@ mod tests {
         let mut contract = Contract::new_default();
 
         let description = "Best programming language!";
-        let start_time = "1656874039533";
-        let end_time = "1656874072974";
+        let start_time = "2022-09-11T21:00:00.000Z";
+        let end_time = "2029-09-19T21:00:00.000Z";
         let options = Vec::from(["Java".to_string(), "Rust".to_string(), "C++".to_string()]);
 
         let created_poll_1 = contract.create_poll(

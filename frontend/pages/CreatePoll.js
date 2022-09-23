@@ -6,7 +6,7 @@ import DateTimePicker from 'react-datetime-picker'
 import calendarTime from '../assets/img/calendar-time.svg'
 import Button from '../components/Button'
 import { create_poll } from '../assets/js/near/utils'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import Modal from '../components/Modal'
 import done from '../assets/img/done.svg'
 
@@ -18,11 +18,10 @@ const CreatePoll = ({}) => {
   const [count, setCount] = useState([{ id: '1' }, { id: '2' }])
   const [visibleModal, setVisibleModal] = useState(false)
 
-  let location = useLocation()
   const navigate = useNavigate()
 
   const handleSubmit = async () => {
-    create_poll(description.toString(), start.toString(), end.toString(), Object.values(options))
+    create_poll(description.toString(), start, end, Object.values(options))
       .then(() => setVisibleModal(true))
       .catch((e) => console.log(e))
   }
@@ -200,7 +199,7 @@ const DateContainer = styled.div`
   align-items: center;
   justify-content: flex-start;
   gap: 40px;
-  margin: 30px 0px;
+  margin: 30px 0;
 `
 const OptionsTitleContainer = styled.div`
   display: flex;
