@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import colors from '../assets/constants/colors'
 
 const Button = ({ text, style, click }) => {
+  const [btnStyle, setStyle] = useState(style);
+
   return (
-    <ButtonContainer style={style} onClick={click}>
+    <ButtonContainer style={btnStyle} onClick={() => {setStyle({...style, color: colors.white, background: colors.violet});click()}}>
       {text}
     </ButtonContainer>
   )
@@ -16,7 +18,7 @@ const ButtonContainer = styled.div`
   height: 40px;
   background: ${colors.white};
   border-radius: 50px;
-  font-family: 'Nunito';
+  font-family: 'Nunito', serif;
   font-style: normal;
   font-weight: 700;
   font-size: 15px;

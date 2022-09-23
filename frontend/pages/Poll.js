@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import colors from '../assets/constants/colors'
 import Option from '../components/Option'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import {
+  delete_poll,
   get_poll,
-  get_polls_for_owner,
   is_voted,
   vote,
 } from '../assets/js/near/utils'
@@ -14,6 +14,7 @@ import Button from '../components/Button'
 
 const Poll = ({}) => {
   const location = useLocation()
+  const navigate = useNavigate()
 
   const [votedPoll, setVotedPoll] = useState(false)
   const [votedOption, setVotedOption] = useState(false)
@@ -47,6 +48,14 @@ const Poll = ({}) => {
     }
   }
 
+  const handleDeletePoll = (pollId) => {
+    if (poll.owner === accountId) {
+      delete_poll(pollId)
+        .then(() => navigate('/my'))
+        .catch((e) => console.log(e))
+    }
+  }
+
   const getPercent = (optionId) => {
     let sum = 0
     poll.options.forEach((option) => {
@@ -76,16 +85,19 @@ const Poll = ({}) => {
           />
         )
       })}
-      <Button
-        text='Delete'
-        style={{
-          width: 110,
-          height: 40,
-          marginTop: 20,
-          color: colors.active,
-        }}
-        click={() => {}}
-      />
+      {poll?.owner === accountId ?
+        <Button
+          text="Delete"
+          style={{
+            width: 110,
+            height: 40,
+            marginTop: 20,
+            color: colors.active,
+          }}
+          click={() => handleDeletePoll(pollId)}
+        />
+        : null
+      }
     </Container>
   )
 }
@@ -99,7 +111,7 @@ const Container = styled.div`
   gap: 10px;
 `
 const Header = styled.div`
-  font-family: 'Nunito';
+  font-family: 'Nunito', serif;
   font-style: normal;
   font-weight: 800;
   font-size: 25px;
