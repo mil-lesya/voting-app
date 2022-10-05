@@ -3,14 +3,12 @@ import styled from 'styled-components'
 import colors from '../assets/constants/colors'
 import Option from '../components/Option'
 import { useLocation, useNavigate } from 'react-router-dom'
-import {
-  delete_poll,
-  get_poll,
-  is_voted,
-  vote,
-} from '../assets/js/near/utils'
+import { delete_poll, get_poll, is_voted, vote } from '../assets/js/near/utils'
 import { getPollsWithStatus } from '../functions/getPollsWithStatus'
 import Button from '../components/Button'
+import Modal from '../components/Modal'
+import trash from '../assets/img/trash.svg'
+import { Oval } from 'react-loader-spinner'
 
 const Poll = ({}) => {
   const location = useLocation()
@@ -20,6 +18,8 @@ const Poll = ({}) => {
   const [votedOption, setVotedOption] = useState(false)
   const [pollId, setPollId] = useState(location.state.id)
   const [poll, setPoll] = useState()
+  const [visibleModal, setVisibleModal] = useState(false)
+  const [isFetching, setIsFetching] = useState(false)
 
   useEffect(() => {
     get_poll(pollId)
@@ -49,9 +49,13 @@ const Poll = ({}) => {
   }
 
   const handleDeletePoll = (pollId) => {
+    setIsFetching(true)
     if (poll.owner === accountId) {
       delete_poll(pollId)
-        .then(() => navigate('/my'))
+        .then(() => {
+          setIsFetching(false)
+          setVisibleModal(true)
+        })
         .catch((e) => console.log(e))
     }
   }
@@ -85,9 +89,26 @@ const Poll = ({}) => {
           />
         )
       })}
-      {poll?.owner === accountId ?
+      {poll?.owner === accountId && (
         <Button
-          text="Delete"
+          text={
+            isFetching ? (
+              <Oval
+                height={20}
+                width={20}
+                color={colors.active}
+                wrapperStyle={{}}
+                wrapperClass=''
+                visible={true}
+                ariaLabel='oval-loading'
+                secondaryColor='#F85656'
+                strokeWidth={2}
+                strokeWidthSecondary={2}
+              />
+            ) : (
+              'Delete'
+            )
+          }
           style={{
             width: 110,
             height: 40,
@@ -96,8 +117,37 @@ const Poll = ({}) => {
           }}
           click={() => handleDeletePoll(pollId)}
         />
-        : null
-      }
+      )}
+
+      <Modal
+        visible={visibleModal}
+        setVisible={setVisibleModal}
+        backgroundStyle={{}}
+        containerStyle={{
+          height: 300,
+          width: 400,
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}
+      >
+        <TitleContainer>
+          <TrashIcon src={trash} />
+          <TitleModal>The poll was deleted</TitleModal>
+        </TitleContainer>
+        <Button
+          click={() => {
+            navigate('/my')
+            setVisibleModal(false)
+          }}
+          text='OK'
+          style={{
+            fontSize: 20,
+            backgroundColor: colors.violet,
+            color: colors.white,
+            height: 40,
+          }}
+        />
+      </Modal>
     </Container>
   )
 }
@@ -118,6 +168,26 @@ const Header = styled.div`
   line-height: 35px;
   color: ${colors.white};
   margin-bottom: 15px;
+`
+const TrashIcon = styled.img`
+  height: 80px;
+  width: 80px;
+`
+const TitleContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+`
+const TitleModal = styled.p`
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 800;
+  font-size: 23px;
+  line-height: 30px;
+  color: ${colors.violet};
+  text-align: center;
+  margin-top: 15px;
 `
 
 export default Poll

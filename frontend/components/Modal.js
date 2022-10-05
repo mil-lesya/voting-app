@@ -1,15 +1,17 @@
 import React from 'react'
+import { RemoveScroll } from 'react-remove-scroll'
 import styled from 'styled-components'
 import colors from '../assets/constants/colors'
 
 const Modal = ({
-                 backgroundStyle,
-                 containerStyle,
-                 visible,
-                 setVisible,
-                 children,
-               }) => {
+  backgroundStyle,
+  containerStyle,
+  visible,
+  setVisible,
+  children,
+}) => {
   return (
+    <RemoveScroll enabled={visible}>
       <Background
         style={backgroundStyle}
         visible={visible}
@@ -19,6 +21,7 @@ const Modal = ({
           {children}
         </Container>
       </Background>
+    </RemoveScroll>
   )
 }
 const Background = styled.div`
@@ -32,6 +35,7 @@ const Background = styled.div`
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  background: rgba(63, 69, 72, 0.5);
 `
 const Container = styled.div`
   display: flex;
@@ -39,7 +43,7 @@ const Container = styled.div`
   align-items: center;
   background: ${colors.white};
   border-radius: 5px;
-  padding: 50px;
+  padding: 30px;
   font-family: 'Noto Sans';
   font-style: normal;
   font-weight: 600;

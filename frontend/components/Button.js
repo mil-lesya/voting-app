@@ -1,12 +1,10 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import colors from '../assets/constants/colors'
 
 const Button = ({ text, style, click }) => {
-  const [btnStyle, setStyle] = useState(style);
-
   return (
-    <ButtonContainer style={btnStyle} onClick={() => {setStyle({...style, color: colors.white, background: colors.violet});click()}}>
+    <ButtonContainer style={style} onClick={() => click()}>
       {text}
     </ButtonContainer>
   )
@@ -27,5 +25,17 @@ const ButtonContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  :hover {
+    background: rgba(255, 255, 255, 0);
+    border: 1px solid
+      ${(props) =>
+        props.style?.backgroundColor
+          ? props.style?.backgroundColor
+          : colors.white};
+    color: ${(props) =>
+      props.style?.backgroundColor
+        ? props.style?.backgroundColor
+        : colors.white};
+  }
 `
 export default Button

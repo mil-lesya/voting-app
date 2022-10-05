@@ -42,8 +42,6 @@ const Option = ({
     )
   }, [votedPoll])
 
-  console.log(votedPoll)
-
   return (
     <>
       <Container style={styleContainer} onClick={vote}>
@@ -53,14 +51,17 @@ const Option = ({
           }
         >
           <div>{name}</div>
-          <div>{!percent && '0%'}</div>
+          <div>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            {!percent && (votedPoll || status !== 'wait') && '0%'}
+          </div>
         </NameOption>
         <Percent style={stylePercent}>
           <PercentText
             percent={percent}
             style={votedPoll || status !== 'start' ? textStyle : null}
           >
-            {percent ? `${percent}%` : ''}
+            {percent ? `${percent.toString().slice(0, 4)}%` : ''}
           </PercentText>
         </Percent>
         {votedValue && <VotedIcon src={votedIcon} />}
@@ -102,7 +103,6 @@ const Percent = styled.div`
 const NameOption = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
   position: absolute;
   font-family: 'Nunito';
   font-weight: 500;

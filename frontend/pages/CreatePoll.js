@@ -9,6 +9,7 @@ import { create_poll } from '../assets/js/near/utils'
 import { useNavigate } from 'react-router-dom'
 import Modal from '../components/Modal'
 import done from '../assets/img/done.svg'
+import { Oval } from 'react-loader-spinner'
 
 const CreatePoll = ({}) => {
   const [description, setDescription] = useState('')
@@ -17,17 +18,16 @@ const CreatePoll = ({}) => {
   const [options, setOptions] = useState({ option1: '', option2: '' })
   const [count, setCount] = useState([{ id: '1' }, { id: '2' }])
   const [visibleModal, setVisibleModal] = useState(false)
+  const [isFetching, setIsFetching] = useState(false)
 
   const navigate = useNavigate()
 
   const handleSubmit = async () => {
-    create_poll(
-      description.toString(),
-      start,
-      end,
-      Object.values(options)
-    )
-      .then(() => setVisibleModal(true))
+    create_poll(description.toString(), start, end, Object.values(options))
+      .then(() => {
+        setIsFetching(false)
+        setVisibleModal(true)
+      })
       .catch((e) => console.log(e))
   }
 
@@ -105,19 +105,44 @@ const CreatePoll = ({}) => {
             )
           })}
           <Button
-            text='Create'
+            text={
+              isFetching ? (
+                <Oval
+                  height={20}
+                  width={20}
+                  color={colors.violet}
+                  wrapperStyle={{}}
+                  wrapperClass=''
+                  visible={true}
+                  ariaLabel='oval-loading'
+                  secondaryColor='#9B51F9'
+                  strokeWidth={2}
+                  strokeWidthSecondary={2}
+                />
+              ) : (
+                'Create'
+              )
+            }
             style={{
               width: 110,
               height: 40,
               marginTop: 20,
             }}
-            click={() => handleSubmit()}
+            click={() => {
+              setIsFetching(true)
+              handleSubmit()
+            }}
           />
           <Modal
             visible={visibleModal}
             setVisible={setVisibleModal}
             backgroundStyle={{}}
-            containerStyle={{ height: 300, width: 400 }}
+            containerStyle={{
+              height: 300,
+              width: 400,
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
           >
             <TitleContainer>
               <DoneIcon src={done} />
@@ -130,10 +155,10 @@ const CreatePoll = ({}) => {
               }}
               text='OK'
               style={{
-                fontSize: 25,
+                fontSize: 20,
                 backgroundColor: colors.violet,
                 color: colors.white,
-                height: 50,
+                height: 40,
               }}
             />
           </Modal>
@@ -228,8 +253,8 @@ const InputsContainer = styled.div`
 `
 
 const DoneIcon = styled.img`
-  height: 100px;
-  width: 100px;
+  height: 80px;
+  width: 80px;
 `
 const TitleContainer = styled.div`
   display: flex;
